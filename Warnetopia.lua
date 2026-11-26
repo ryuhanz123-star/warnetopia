@@ -1,281 +1,245 @@
 
 --[[
-    WARNETOPIA COMPACT V2
-    Compact GUI | Neon Blue
+    WARNETOPIA V3
+    Compact Admin-Style Panel
+    GUI + Local Settings
 ]]
-
-if _G.Warnetopia then
-    pcall(function() _G.Warnetopia:Destroy() end)
-end
 
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
-local RS = game:GetService("RunService")
-local CoreGui = game:GetService("CoreGui")
 
-local P = Players.LocalPlayer
-local G = Instance.new("ScreenGui")
-G.Name = "WarnetopiaCompact"
-G.ResetOnSpawn = false
-G.Parent = CoreGui
+local Player = Players.LocalPlayer
+local PlayerGui = Player:WaitForChild("PlayerGui")
 
-_G.Warnetopia = G
+-- Remove old GUI
+local Old = PlayerGui:FindFirstChild("WarnetopiaV3")
+if Old then
+    Old:Destroy()
+end
 
-local BLUE = Color3.fromRGB(0,220,255)
-local DARK = Color3.fromRGB(18,20,30)
-local BUTTON = Color3.fromRGB(38,45,62)
+-- GUI
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "WarnetopiaV3"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = PlayerGui
 
-local F = Instance.new("Frame",G)
-F.Size = UDim2.fromOffset(280,410)
-F.Position = UDim2.new(.5,-140,.5,-205)
-F.BackgroundColor3 = DARK
-F.Active = true
-F.Draggable = true
+local Main = Instance.new("Frame")
+Main.Size = UDim2.fromOffset(280, 360)
+Main.Position = UDim2.new(0.5, -140, 0.5, -180)
+Main.BackgroundColor3 = Color3.fromRGB(15, 18, 28)
+Main.BorderSizePixel = 0
+Main.Parent = ScreenGui
 
-Instance.new("UICorner",F).CornerRadius =
-    UDim.new(0,12)
+local Corner = Instance.new("UICorner")
+Corner.CornerRadius = UDim.new(0, 12)
+Corner.Parent = Main
 
-local Stroke = Instance.new("UIStroke",F)
-Stroke.Color = BLUE
+local Stroke = Instance.new("UIStroke")
+Stroke.Color = Color3.fromRGB(0, 170, 255)
 Stroke.Thickness = 1.5
+Stroke.Parent = Main
 
--- HEADER
-local Header = Instance.new("Frame",F)
-Header.Size = UDim2.new(1,0,0,42)
-Header.BackgroundTransparency = 1
+-- Header
+local Header = Instance.new("Frame")
+Header.Size = UDim2.new(1, 0, 0, 42)
+Header.BackgroundColor3 = Color3.fromRGB(0, 100, 180)
+Header.BorderSizePixel = 0
+Header.Parent = Main
 
-local Title = Instance.new("TextLabel",Header)
-Title.Size = UDim2.new(1,-105,1,0)
-Title.Position = UDim2.fromOffset(10,0)
+local HeaderCorner = Instance.new("UICorner")
+HeaderCorner.CornerRadius = UDim.new(0, 12)
+HeaderCorner.Parent = Header
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, -90, 1, 0)
+Title.Position = UDim2.fromOffset(12, 0)
 Title.BackgroundTransparency = 1
-Title.Text = "WARNETOPIA V2"
-Title.TextColor3 = BLUE
+Title.Text = "WARNETOPIA V3"
+Title.TextColor3 = Color3.new(1, 1, 1)
+Title.TextSize = 16
 Title.Font = Enum.Font.GothamBold
-Title.TextSize = 15
 Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Parent = Header
 
-local function makeButton(parent,text,size,pos,color)
-    local b = Instance.new("TextButton",parent)
-    b.Size = size
-    b.Position = pos
-    b.BackgroundColor3 = color or BUTTON
-    b.Text = text
-    b.TextColor3 = Color3.new(1,1,1)
-    b.Font = Enum.Font.GothamBold
-    b.TextSize = 11
-    b.AutoButtonColor = true
+-- Minimize
+local Minimize = Instance.new("TextButton")
+Minimize.Size = UDim2.fromOffset(30, 28)
+Minimize.Position = UDim2.new(1, -68, 0, 7)
+Minimize.Text = "-"
+Minimize.TextSize = 20
+Minimize.Font = Enum.Font.GothamBold
+Minimize.BackgroundColor3 = Color3.fromRGB(20, 35, 55)
+Minimize.TextColor3 = Color3.new(1, 1, 1)
+Minimize.Parent = Header
 
-    Instance.new("UICorner",b).CornerRadius =
-        UDim.new(0,7)
+-- Close
+local Close = Instance.new("TextButton")
+Close.Size = UDim2.fromOffset(30, 28)
+Close.Position = UDim2.new(1, -34, 0, 7)
+Close.Text = "X"
+Close.TextSize = 14
+Close.Font = Enum.Font.GothamBold
+Close.BackgroundColor3 = Color3.fromRGB(180, 35, 45)
+Close.TextColor3 = Color3.new(1, 1, 1)
+Close.Parent = Header
 
-    return b
-end
+local Content = Instance.new("ScrollingFrame")
+Content.Position = UDim2.fromOffset(10, 52)
+Content.Size = UDim2.new(1, -20, 1, -62)
+Content.BackgroundTransparency = 1
+Content.BorderSizePixel = 0
+Content.ScrollBarThickness = 3
+Content.CanvasSize = UDim2.fromOffset(0, 0)
+Content.Parent = Main
 
-local Min = makeButton(
-    Header,"MIN",
-    UDim2.fromOffset(42,25),
-    UDim2.new(1,-92,0,8),
-    BUTTON
-)
+local Layout = Instance.new("UIListLayout")
+Layout.Padding = UDim.new(0, 7)
+Layout.Parent = Content
 
-local Close = makeButton(
-    Header,"X",
-    UDim2.fromOffset(32,25),
-    UDim2.new(1,-42,0,8),
-    Color3.fromRGB(180,40,55)
-)
-
--- CONTENT
-local S = Instance.new("ScrollingFrame",F)
-S.Position = UDim2.fromOffset(10,48)
-S.Size = UDim2.new(1,-20,1,-58)
-S.BackgroundTransparency = 1
-S.BorderSizePixel = 0
-S.ScrollBarThickness = 3
-S.ScrollBarImageColor3 = BLUE
-S.AutomaticCanvasSize = Enum.AutomaticSize.Y
-S.CanvasSize = UDim2.new()
-
-local Layout = Instance.new("UIListLayout",S)
-Layout.Padding = UDim.new(0,7)
-Layout.SortOrder = Enum.SortOrder.LayoutOrder
-
-local Padding = Instance.new("UIPadding",S)
-Padding.PaddingBottom = UDim.new(0,8)
-
-local function Hum()
-    local c = P.Character
-    return c and c:FindFirstChildOfClass("Humanoid")
-end
-
-local function Root()
-    local c = P.Character
-    return c and c:FindFirstChild("HumanoidRootPart")
-end
-
-local function Button(name,callback)
-    local b = makeButton(
-        S,name,
-        UDim2.new(1,0,0,34),
-        UDim2.new(),
-        BUTTON
-    )
-
-    b.TextSize = 12
-    b.MouseButton1Click:Connect(callback)
-    return b
-end
-
-local function Toggle(name,callback)
-    local enabled = false
-
-    local b = Button(name.." : OFF",function()
-        enabled = not enabled
-
-        b.Text = name..
-            (enabled and " : ON" or " : OFF")
-
-        b.BackgroundColor3 = enabled
-            and Color3.fromRGB(0,120,105)
-            or BUTTON
-
-        callback(enabled)
-    end)
-
-    return b
-end
-
--- MOVEMENT
-local infiniteJump = false
-local noclip = false
-
-Toggle("Infinite Jump",function(v)
-    infiniteJump = v
+Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    Content.CanvasSize = UDim2.fromOffset(0, Layout.AbsoluteContentSize.Y + 8)
 end)
 
-UIS.JumpRequest:Connect(function()
-    if infiniteJump then
-        local h = Hum()
-        if h then
-            h:ChangeState(
-                Enum.HumanoidStateType.Jumping
-            )
+local function MakeButton(label, callback)
+    local Button = Instance.new("TextButton")
+    Button.Size = UDim2.new(1, -5, 0, 36)
+    Button.BackgroundColor3 = Color3.fromRGB(27, 37, 55)
+    Button.TextColor3 = Color3.new(1, 1, 1)
+    Button.Text = label
+    Button.TextSize = 13
+    Button.Font = Enum.Font.GothamSemibold
+    Button.AutoButtonColor = true
+    Button.Parent = Content
+
+    local C = Instance.new("UICorner")
+    C.CornerRadius = UDim.new(0, 7)
+    C.Parent = Button
+
+    Button.MouseButton1Click:Connect(callback)
+    return Button
+end
+
+local function MakeLabel(label)
+    local Text = Instance.new("TextLabel")
+    Text.Size = UDim2.new(1, -5, 0, 25)
+    Text.BackgroundTransparency = 1
+    Text.Text = label
+    Text.TextColor3 = Color3.fromRGB(0, 190, 255)
+    Text.TextSize = 12
+    Text.Font = Enum.Font.GothamBold
+    Text.TextXAlignment = Enum.TextXAlignment.Left
+    Text.Parent = Content
+end
+
+-- Character helpers
+local function GetHumanoid()
+    local Character = Player.Character
+    return Character and Character:FindFirstChildOfClass("Humanoid")
+end
+
+-- Movement settings
+MakeLabel("MOVEMENT SETTINGS")
+
+MakeButton("WalkSpeed: Default", function()
+    local Humanoid = GetHumanoid()
+    if Humanoid then
+        Humanoid.WalkSpeed = 16
+    end
+end)
+
+MakeButton("JumpPower: Default", function()
+    local Humanoid = GetHumanoid()
+    if Humanoid then
+        Humanoid.UseJumpPower = true
+        Humanoid.JumpPower = 50
+    end
+end)
+
+MakeButton("Reset Character", function()
+    local Humanoid = GetHumanoid()
+    if Humanoid then
+        Humanoid.Health = 0
+    end
+end)
+
+-- Interface
+MakeLabel("INTERFACE")
+
+MakeButton("Refresh Character", function()
+    local Character = Player.Character
+    if Character then
+        local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+        if Humanoid then
+            Humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
         end
     end
 end)
 
-Toggle("Noclip",function(v)
-    noclip = v
-end)
+MakeButton("Show Player Information", function()
+    local Character = Player.Character
+    local Humanoid = GetHumanoid()
 
-local oldCollision = {}
-
-RS.Stepped:Connect(function()
-    local c = P.Character
-    if not c then return end
-
-    for _,part in ipairs(c:GetDescendants()) do
-        if part:IsA("BasePart") then
-            if noclip then
-                if oldCollision[part] == nil then
-                    oldCollision[part] = part.CanCollide
-                end
-                part.CanCollide = false
-            elseif oldCollision[part] ~= nil then
-                part.CanCollide = oldCollision[part]
-                oldCollision[part] = nil
-            end
-        end
+    if Humanoid then
+        print("Player:", Player.Name)
+        print("Health:", Humanoid.Health)
+        print("WalkSpeed:", Humanoid.WalkSpeed)
     end
 end)
 
-Button("WalkSpeed +32",function()
-    local h = Hum()
-    if h then h.WalkSpeed = 32 end
+MakeButton("Rejoin Current Server", function()
+    game:GetService("TeleportService"):Teleport(game.PlaceId, Player)
 end)
 
-Button("WalkSpeed Normal",function()
-    local h = Hum()
-    if h then h.WalkSpeed = 16 end
+-- Minimize / Restore
+local Minimized = false
+
+Minimize.MouseButton1Click:Connect(function()
+    Minimized = not Minimized
+    Content.Visible = not Minimized
+    Main.Size = Minimized
+        and UDim2.fromOffset(280, 42)
+        or UDim2.fromOffset(280, 360)
+    Minimize.Text = Minimized and "+" or "-"
 end)
 
-Button("JumpPower +80",function()
-    local h = Hum()
-    if h then
-        h.UseJumpPower = true
-        h.JumpPower = 80
-    end
-end)
-
-Button("JumpPower Normal",function()
-    local h = Hum()
-    if h then
-        h.UseJumpPower = true
-        h.JumpPower = 50
-    end
-end)
-
--- TELEPORT
-Button("Teleport Spawn",function()
-    local root = Root()
-    local spawn = workspace:FindFirstChildWhichIsA(
-        "SpawnLocation",true
-    )
-
-    if root and spawn then
-        root.CFrame = spawn.CFrame * CFrame.new(0,4,0)
-    end
-end)
-
-Button("Reset Character",function()
-    local h = Hum()
-    if h then h.Health = 0 end
-end)
-
--- AUTO FEATURES
-for _,name in ipairs({
-    "Auto Open",
-    "Auto Mission",
-    "Auto Customer",
-    "Auto Serve",
-    "Auto Farm",
-    "Auto Money"
-}) do
-    Toggle(name,function(v)
-        warn(name,
-            v and "ON - menunggu integrasi game"
-            or "OFF"
-        )
-    end)
-end
-
--- MINIMIZE / RESTORE
-local minimized = false
-
-Min.MouseButton1Click:Connect(function()
-    minimized = not minimized
-
-    S.Visible = not minimized
-    F.Size = minimized
-        and UDim2.fromOffset(280,42)
-        or UDim2.fromOffset(280,410)
-
-    Min.Text = minimized and "OPEN" or "MIN"
-end)
-
--- CLOSE
 Close.MouseButton1Click:Connect(function()
-    noclip = false
-
-    for part,old in pairs(oldCollision) do
-        if part and part.Parent then
-            part.CanCollide = old
-        end
-    end
-
-    oldCollision = {}
-    G:Destroy()
-    _G.Warnetopia = nil
+    ScreenGui:Destroy()
 end)
 
-print("WARNETOPIA COMPACT V2 LOADED")
+-- Drag window
+local Dragging = false
+local DragStart
+local StartPosition
+
+Header.InputBegan:Connect(function(Input)
+    if Input.UserInputType == Enum.UserInputType.MouseButton1
+        or Input.UserInputType == Enum.UserInputType.Touch then
+        Dragging = true
+        DragStart = Input.Position
+        StartPosition = Main.Position
+    end
+end)
+
+UIS.InputChanged:Connect(function(Input)
+    if Dragging and (
+        Input.UserInputType == Enum.UserInputType.MouseMovement
+        or Input.UserInputType == Enum.UserInputType.Touch
+    ) then
+        local Delta = Input.Position - DragStart
+        Main.Position = UDim2.new(
+            StartPosition.X.Scale,
+            StartPosition.X.Offset + Delta.X,
+            StartPosition.Y.Scale,
+            StartPosition.Y.Offset + Delta.Y
+        )
+    end
+end)
+
+UIS.InputEnded:Connect(function(Input)
+    if Input.UserInputType == Enum.UserInputType.MouseButton1
+        or Input.UserInputType == Enum.UserInputType.Touch then
+        Dragging = false
+    end
+end)
+
+print("WARNETOPIA V3 Loaded")
